@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+
+<title>Multiple upload files</title>
+<style type="text/css"><!--
+#uploadform {
+ position:relative;
+ width:280px;
+ margin:3px auto 15px 8px;
+ text-align:center;
+}
+#uploadform input {
+ display:block; 
+ margin:3px auto;
+}
+--></style>
+
+</head>
+<body>
+
+<div id="ifrm"><font size="1"><i><a href="http://www.coursesweb.net/ajax/" title="Courses and Ajax tutorials">Ajax Course</a></i></font></div>
+<form id="uploadform" action="uploader.php" method="post" enctype="multipart/form-data" target="uploadframe" onsubmit="uploading(this); return false">
+  <input type="file" class="file_up" name="file_up[]" />
+  <input type="submit" value="UPLOAD" id="sub" />
+</form>
+<script type="text/javascript" src="upload.js"></script>
+<button onclick="add_upload('uploadform'); return false;">New upload box</button>
+
+</body>
+</html>
