@@ -1,18 +1,6 @@
-.buttoncustom {
-  background-color: hsl(160, 0%, 74%) !important;
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#e5e5e5", endColorstr="#bcbcbc");
-  background-image: -khtml-gradient(linear, left top, left bottom, from(#e5e5e5), to(#bcbcbc));
-  background-image: -moz-linear-gradient(top, #e5e5e5, #bcbcbc);
-  background-image: -ms-linear-gradient(top, #e5e5e5, #bcbcbc);
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #e5e5e5), color-stop(100%, #bcbcbc));
-  background-image: -webkit-linear-gradient(top, #e5e5e5, #bcbcbc);
-  background-image: -o-linear-gradient(top, #e5e5e5, #bcbcbc);
-  background-image: linear-gradient(#e5e5e5, #bcbcbc);
-  border-color: #bcbcbc #bcbcbc hsl(160, 0%, 70%);
-  color: #333 !important;
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.26);
-  -webkit-font-smoothing: antialiased;
+body {
+  background-color:#ffffff;
+  /* background-image:url('img/debut_light/debut_light.png'); */
 }
 
 .gdfTable {
@@ -43,7 +31,6 @@
   border-bottom: 1px solid #eee;
   border-right: 1px solid #eee;
 }
-
 
 .ganttLines{
   position:absolute;
@@ -214,7 +201,9 @@
 }
 
 .taskBox{
-  position:absolute;
+
+  position:relative;
+  z-index:0;
   height:25px;
   margin-top:3px;
   z-index:100;
@@ -349,4 +338,48 @@
   cursor:move;
 }
 
+/* CSS taken from gantt.php file */
+.resEdit {
+    padding: 15px;
+  }
 
+.resLine {
+    width: 31%;     /* allagi gia na mikrinoyn ta kelia kai na emfanizontai ol ta stoixeia twn texnikwn */
+    padding: 3px;
+    margin: 5px;
+    border: 1px solid #d0d0d0;
+  }
+  
+.resLine1 {
+    width: 23%;     /* dika mou koumpia */
+    padding: 3px;
+    margin: 5px;
+    border: 1px solid #d0d0d0;
+  }
+
+.boxi {
+  background-color: #F4F4F4;
+  border: 1px solid #CCC;
+  height: 100px;
+  width: 200px;
+  padding: 5px;
+  display:none;
+  position:absolute;
+  } 
+  
+.boxix {
+  background-color: #F4F4F4;
+  border: 1px solid #CCC;
+  height: 100px;
+  width: 200px;
+  padding: 5px;  
+  display:none;
+  position:fixed;
+  }
+
+/*
+#glowinghover {
+    position:relative;
+    z-index:3;
+    border-color:red;
+  } */

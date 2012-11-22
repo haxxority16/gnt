@@ -53,6 +53,8 @@
   $result1 = mysql_query($quer1) or die(mysql_error());
   $line1  = mysql_fetch_row($result1);
 
+  // If project is full or null, so if we want to view all the projects on the browser, to query inside query.
+  // Else, do lighter query. 
   if ($proj=='full'||$proj==null){
     $quer ="select * from tasks where parent = 0 and readit = 1 and project_id in (select project_id from staff_tasks where user_id = $user_id)";
     $result = mysql_query($quer);
@@ -107,67 +109,21 @@
   <script src="ganttGridEditor.js"></script>
   <script src="ganttMaster.js"></script>
   <script src="jquery.alerts.js"></script> 
- <!-- <script src="myajax.js"></script>   Den fainetai na toy leipei -->
 
 </head>
-<body style="background-color: #fff;"  onload='ajax_mine(<? print $proj;?>)'>
-<div id="workSpace" style="padding:0px; overflow-y:auto; overflow-x:hidden;border:1px solid #e5e5e5;position:relative;margin:0 5px">
 
-</div>
+<body background-color: #ffffff onload='ajax_mine(<? print $proj;?>)'>
+<div id="workSpace" style="padding:0px; overflow-y:auto; overflow-x:hidden;border:1px solid #e5e5e5;position:relative;margin:0 5px"></div>
 
-<div id="taZone" style="display:none;"> 
-<!--- <div> -->
+<div id="taZone" style="display:none;">
   <textarea rows="8" cols="150" id="ta" name="ta">
     <? print $asd;?> 
- </textarea>
-
+  </textarea>
 </div> 
 
-<style>
-  .resEdit {
-    padding: 15px;
-  }
-
-  .resLine {
-    width: 31%;     /* allagi gia na mikrinoyn ta kelia kai na emfanizontai ol ta stoixeia twn texnikwn */
-    padding: 3px;
-    margin: 5px;
-    border: 1px solid #d0d0d0;
-  }
-  
-  .resLine1 {
-    width: 23%;     /* dika mou koumpia */
-    padding: 3px;
-    margin: 5px;
-    border: 1px solid #d0d0d0;
-  }
-
-  .boxi {
-  background-color: #F4F4F4;
-  border: 1px solid #CCC;
-  height: 100px;
-  width: 200px;
-  padding: 5px;
-  display:none;
-  position:absolute;
-  } 
-  
-    .boxix {
-  background-color: #F4F4F4;
-  border: 1px solid #CCC;
-  height: 100px;
-  width: 200px;
-  padding: 5px;  
-  display:none;
-  position:fixed;
-  }  
-</style>
-
-
 <script type="text/javascript">
-
-var ge;  //this is the hugly but very friendly global var for the gantt editor
-$(function() {
+  var ge;  //this is the hugly but very friendly global var for the gantt editor
+  $(function() {
 
   //load templates
   $("#ganttemplates").loadTemplates();
@@ -182,7 +138,7 @@ $(function() {
   $(".ganttButtonBar div")//.append("<button onclick='clearGantt();' class='button'>Καθαρισμός</button>")
           .append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
           .append("<button onclick='openResourceEditor1();' class='button'>edit resources</button>")
-      //    .append("<button onclick='getFile();' class='button'>Εξαγωγή αποτελεσμάτων</button>")
+          //.append("<button onclick='getFile();' class='button'>Εξαγωγή αποτελεσμάτων</button>")
           .append("<button onclick='staffmanage();' class='button'>Διαχείριση Χρηστών</button>")
           .append("<button onclick='savenewdata();' class='button' id='sava' >Εισαγωγή νέων</button>")
            .append("<button onclick='dok();' class='button1' id='hidr'>Απόκρυψη</button>")
@@ -526,7 +482,6 @@ function saveInLocalStorage() {
   }
 }
   
-
 </script>
 
 
@@ -639,9 +594,6 @@ function saveInLocalStorage() {
     </div>
   --></div>
 
-
-
-
   <div class="__template__" type="TASK_EDITOR">
   <div class="ganttTaskEditor" >
 <!--  <form> -->
@@ -683,31 +635,31 @@ function saveInLocalStorage() {
             
           
            <tr>
-           <td><span onmouseover="ShowText('Message'); return true;" onmouseout="HideText('Message'); return true;" href="javascript:ShowText('Message')">
+           <td><span id="glowinghover" onmouseover="ShowText('Message'); return true;" onmouseout="HideText('Message'); return true;" href="javascript:ShowText('Message')">
            <label>Σύνολο Πόρων</label></span><br><input type="text" name="full_mes" id="full_mes" value="" size="3" class="formElements" onchange="jalert()">
            <div  id="Message"  class="boxi">Σύνολο Πόρων ορίζεται η συνολική ποσότητα της μετρικής που χρησιμοποιούμε π.χ. εργατοώρες, εργατομήνες κ.α.</div>
            </td>
-          <td><span onmouseover="ShowText('Message1'); return true;" onmouseout="HideText('Message1'); return true;" href="javascript:ShowText('Message1')">
+          <td><span id="glowinghover" onmouseover="ShowText('Message1'); return true;" onmouseout="HideText('Message1'); return true;" href="javascript:ShowText('Message1')">
           <label>Πόροι έως τώρα</label> <div  id="Message1"  class="boxi">Πόροι έως τώρα ορίζεται η τιμή της μετρικής όπως αυτή έχει καθοριστεί έως τώρα</div></span><br><input type="text" name="now_mes" id="now_mes" value="" size="3" class="formElements" onchange="jalert()"></td>
           <td><label for="progress">Πρόοδος εργασίας</label><br><input type="text" name="progress" id="progress" value="" size="3" class="formElements"></td>
           </tr>
           
            <tr>
-           <td><span onmouseover="ShowText('fMessage'); return true;" onmouseout="HideText('fMessage'); return true;" href="javascript:ShowText('fMessage')">
+           <td><span id="glowinghover" onmouseover="ShowText('fMessage'); return true;" onmouseout="HideText('fMessage'); return true;" href="javascript:ShowText('fMessage')">
            <label>Σύνολο Δαπανών</label></span><br><input type="text" name="ffull_mes" id="ffull_mes" value="" size="3" class="formElements" onchange="jalert()">
            <div  id="fMessage"  class="boxi">Σύνολο Δαπανών ορίζεται το σύνολο των χρημάτων που διατίθενται για την ολοκλήρωση της συγκεκριμένης εργασίας</div>
            </td>
-          <td><span onmouseover="ShowText('fMessage1'); return true;" onmouseout="HideText('fMessage1'); return true;" href="javascript:ShowText('fMessage1')">
+          <td><span id="glowinghover" onmouseover="ShowText('fMessage1'); return true;" onmouseout="HideText('fMessage1'); return true;" href="javascript:ShowText('fMessage1')">
           <label>Δαπάνες έως τώρα</label> <div  id="fMessage1"  class="boxi">Δαπάνες έως τώρα ορίζεται το σύνολο των χρημάτων τα οποία έχουν δαπανηθεί έως τώρα</div></span><br><input type="text" name="fnow_mes" id="fnow_mes" value="" size="3" class="formElements" onchange="jalert()"></td>
           <td><label for="fprogress">Οικονομική Πρόοδος</label><br><input type="text" name="fprogress" id="fprogress" value="" size="3" class="formElements"></td> 
           </tr>
           
            <tr>
-           <td><span onmouseover="ShowText('dMessage'); return true;" onmouseout="HideText('dMessage'); return true;" href="javascript:ShowText('dMessage')">
+           <td><span id="glowinghover" onmouseover="ShowText('dMessage'); return true;" onmouseout="HideText('dMessage'); return true;" href="javascript:ShowText('dMessage')">
            <label>Συνολική τιμή δείκτη</label></span><br><input type="text" name="dfull_mes" id="dfull_mes" value="" size="3" class="formElements" onchange="jalert()">
            <div  id="dMessage"  class="boxi">Εκφράζει την συνολική τιμή του δείκτη που έχει οριστεί</div>
            </td>
-          <td><span onmouseover="ShowText('dMessage1'); return true;" onmouseout="HideText('dMessage1'); return true;" href="javascript:ShowText('dMessage1')">
+          <td><span id="glowinghover" onmouseover="ShowText('dMessage1'); return true;" onmouseout="HideText('dMessage1'); return true;" href="javascript:ShowText('dMessage1')">
           <label>Δείκτης έως τώρα</label> <div  id="dMessage1"  class="boxi">Εκφράζει την τιμή του δείκτη όπως αυτή έχει καθοριστεί έως τώρα</div></span><br><input type="text" name="dnow_mes" id="dnow_mes" value="" size="3" class="formElements" onchange="jalert()"></td>
           <td><label for="dprogress">Πρόοδος Δείκτη</label><br><input type="text" name="dprogress" id="dprogress" value="" size="3" class="formElements"></td> 
           </tr>
@@ -724,7 +676,7 @@ function saveInLocalStorage() {
 
 <tr><td>
   <!--  <form enctype='multipart/form-data' name='frmupload' action='' method='POST'>  -->
-<input name="upload" type="submit" class="button big" id="upload" value=" Διαθέσιμα αρχεία " onClick="savefile()">       <!--- "location.href='fileuploadinblob/index.php'" --->
+<input name="upload" type="submit" class="button big" id="upload" value=" Διαθέσιμα αρχεία " onClick="savefile()">       <!-- "location.href='fileuploadinblob/index.php'" -->
 <!--	 </form>     -->
 </td></tr>
 
@@ -819,7 +771,7 @@ function saveInLocalStorage() {
 <table cellpadding="10" cellspacing="0" width="100%" border="0" align="center">
 
 <tr><td>
-<input name="upload" type="submit" class="button big" id="upload" value=" Διαθέσιμα αρχεία " onClick="savefile()">       <!--- "location.href='fileuploadinblob/index.php'" --->
+<input name="upload" type="submit" class="button big" id="upload" value=" Διαθέσιμα αρχεία " onClick="savefile()">       <!-- "location.href='fileuploadinblob/index.php'" --->
 </td></tr>
  <table  cellspacing="1" cellpadding="0" width="100%" id="assigsTable">
    <h2>Ανατεθειμένο σε:</h2>
@@ -836,8 +788,8 @@ function saveInLocalStorage() {
   </div
 
       
-  <div class="__template__" type="ASSIGNMENT_ROW"><!--
-  <tr taskId="(#=obj.task.id#)" assigId="(#=obj.assig.id#)" class="assigEditRow" >
+  <div class="__template__" type="ASSIGNMENT_ROW"> 
+  <!--<tr taskId="(#=obj.task.id#)" assigId="(#=obj.assig.id#)" class="assigEditRow" >
     <td ><select name="resourceId"  class="formElements" (#=obj.assig.id.indexOf("tmp_")==0?"":"disabled"#) ></select></td>
     <td ><select type="select" name="roleId"  class="formElements"></select></td>
     <td ><input type="text" name="effort" value="(#=getMillisInHoursMinutes(obj.assig.effort)#)" size="5" class="formElements"></td>
