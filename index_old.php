@@ -1,14 +1,3 @@
-<?php
-
-session_start();
-
-// Check, if user is already login, then jump to secured page
-if (isset($_SESSION['username'])) {
-header('Location: securedpage.php');
-}
-
-?>
-
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -22,13 +11,13 @@ header('Location: securedpage.php');
 <body>
 
 <!-- Log-In Form -->
-<form method="POST" action="loginproc.php" name="f" class="box login">
+<form method="POST" action="gantt.php" name="f" class="box login">
 	<center><img src="img/cti_logo.png"/></center>
 	<fieldset class="boxBody">
 	  <label>Username</label>
-	  <input type="text" name="username" tabindex="1" size="20" placeholder="ITYE Project Monitor Service" required>
+	  <input type="text" tabindex="1" size="20" placeholder="ITYE Project Monitor Service" required>
 	  <label><!--<a href="#" class="rLink" tabindex="5">Forget your password?--></a>Password</label>
-	  <input type="password" name="password" tabindex="2" name="password" size="20" required>
+	  <input type="password" tabindex="2" name="password" size="20" required>
 	</fieldset>
 	<footer>
 	  <label><input type="checkbox" tabindex="3">Keep me logged in</label>
