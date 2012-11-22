@@ -1,14 +1,15 @@
 <?php
   
+  // If session is not set, start it, otherwise let it be.
   if(!isset($_SESSION)) {
        session_start();
   }
   
-  require 'tools/FirePHPCore/fb.php';
-  require 'connection.php';
-  mysql_query("SET NAMES utf8");
+  require 'tools/FirePHPCore/fb.php'; // FirePHP debugging tool.
+  require 'connection.php'; // Connection php file, used for database connections.
+  mysql_query("SET NAMES utf8"); // Set unicode for mysql queries.
 
-  fb($_POST);
+  fb($_POST); // firephp console print: username (sent via loginproc.php)
 
   // Getting the username variable from the session.
   $session_username = $_SESSION['username'];
@@ -39,47 +40,13 @@
    $user_id = $_SESSION['user_id'];
   }*/
 
-/*
-   session_start();
-     $proj = $_GET['proj'];
-     $packtask = $_GET['packtask'];
-     $password = $_POST['password'];
-     
-   if ($password){
-    $quera ="select user_id,licenses from staff where password like '$password' ";
-    $resulta = mysql_query($quera);
-    $linea = mysql_fetch_row($resulta);
-  
-
-  if($linea){
-  $license = $linea[1];
-  $user_id = $linea[0];
-  $_SESSION['license']  = $linea[1];
-  $_SESSION['user_id']  = $linea[0];
-  }else{ ?>
-   <script language="javascript">
- alert("Λάθος κωδικός πρόσβασης");   
-location.replace("index.php");
-
-</script>
-  <? }
-  }else{
-   $license = $_SESSION['license'];
-   $user_id = $_SESSION['user_id'];
-  }
-
-*/
-
-  // Not sure if best solution.
+  // Not sure if best solution for getting project variable and respective project url.
   if(isset($_GET['proj'])) {
-    $proj = $_GET['proj'];
+    $proj = $_GET['proj']; //get the project from the url to use for viewing the specific project.
   }
   else  {
-    $proj=null;
+    $proj=null; //else, just put null so that we see all of the projects.
   }
-  
-  //$packtask = $_GET['packtask'];
-  //$password = $_POST['password'];
 
   // Selecting available roles for each user, depending on their license (admin, power user, viewer).
   $quer1 ="select canwrite,canwriteonparent from licenses where license_id = $license";
@@ -87,34 +54,22 @@ location.replace("index.php");
   $line1  = mysql_fetch_row($result1);
 
   if ($proj=='full'||$proj==null){
-     $quer ="select * from tasks where parent = 0 and readit = 1 and project_id in (select project_id from staff_tasks where user_id = $user_id)";
+    $quer ="select * from tasks where parent = 0 and readit = 1 and project_id in (select project_id from staff_tasks where user_id = $user_id)";
     $result = mysql_query($quer);
     $line = mysql_fetch_row($result);
-    
-$asd ='{"tasks":[{"id":'.$line[0].',"name":"'.$line[1].'","code":"'.$line[0].'","level":'.$line[3].',"status":"'.$line[4].'","start":'.$line[5].',"duration":'.$line[6].',"end":'.$line[7].',"startIsMilestone":'.$line[8].',"endIsMilestone":'.$line[9].',"assigs":[],"depends":"'.$line[10].'","description":"'.$line[11].'","progress":"'.$line[12].'","full_mes":'.$line[16].',"now_mes":"'.$line[17].'","fprogress":"'.$line[18].'","ffull_mes":"'.$line[19].'","fnow_mes":"'.$line[20].'"}';
-
-   while ($line=mysql_fetch_row($result)) {
-$asd.=',{"id":'.$line[0].',"name":"'.$line[1].'","code":"'.$line[0].'","level":'.$line[3].',"status":"'.$line[4].'","start":'.$line[5].',"duration":'.$line[6].',"end":'.$line[7].',"startIsMilestone":'.$line[8].',"endIsMilestone":'.$line[9].',"assigs":[],"depends":"'.$line[10].'","description":"'.$line[11].'","progress":"'.$line[12].'","full_mes":'.$line[16].',"now_mes":"'.$line[17].'","fprogress":"'.$line[18].'","ffull_mes":"'.$line[19].'","fnow_mes":"'.$line[20].'"}';
-   }
-$asd.='],"selectedRow":0,"deletedTaskIds":[],"canWrite":'.$line1[0].',"canWriteOnParent":'.$line1[1].' }';    //:true,"canWriteOnParent":true,"cansomewrite":false }';
-  }else{
-  // if ($proj==null){
- //  $proj=2;
- //  }
-    $quer ="select * from tasks where project_id = $proj and readit = 1 "; 
-   /*
-   if ($packtask=='fulltask'){
-      $quer.=" and level = 1";
-     }else if ($packtask){
-    $quer.="and id = $packtask or parent = $packtask";
+    $asd ='{"tasks":[{"id":'.$line[0].',"name":"'.$line[1].'","code":"'.$line[0].'","level":'.$line[3].',"status":"'.$line[4].'","start":'.$line[5].',"duration":'.$line[6].',"end":'.$line[7].',"startIsMilestone":'.$line[8].',"endIsMilestone":'.$line[9].',"assigs":[],"depends":"'.$line[10].'","description":"'.$line[11].'","progress":"'.$line[12].'","full_mes":'.$line[16].',"now_mes":"'.$line[17].'","fprogress":"'.$line[18].'","ffull_mes":"'.$line[19].'","fnow_mes":"'.$line[20].'"}';
+    while ($line=mysql_fetch_row($result)) {
+      $asd.=',{"id":'.$line[0].',"name":"'.$line[1].'","code":"'.$line[0].'","level":'.$line[3].',"status":"'.$line[4].'","start":'.$line[5].',"duration":'.$line[6].',"end":'.$line[7].',"startIsMilestone":'.$line[8].',"endIsMilestone":'.$line[9].',"assigs":[],"depends":"'.$line[10].'","description":"'.$line[11].'","progress":"'.$line[12].'","full_mes":'.$line[16].',"now_mes":"'.$line[17].'","fprogress":"'.$line[18].'","ffull_mes":"'.$line[19].'","fnow_mes":"'.$line[20].'"}';
     }
-    */
-    
+    $asd.='],"selectedRow":0,"deletedTaskIds":[],"canWrite":'.$line1[0].',"canWriteOnParent":'.$line1[1].' }';    //:true,"canWriteOnParent":true,"cansomewrite":false }';
+  }
+  else  {
+    // if ($proj==null){ $proj=2; }
+    $quer ="select * from tasks where project_id = $proj and readit = 1 "; // Select the specific project.
+    // if ($packtask=='fulltask'){ $quer.=" and level = 1"; } else if ($packtask){ $quer.="and id = $packtask or parent = $packtask"; }
     $result = mysql_query($quer);
     $line = mysql_fetch_row($result);
-    
     $asd ='{"tasks":[{"id":'.$line[0].',"name":"'.$line[1].'","code":"'.$line[0].'","level":'.$line[3].',"status":"'.$line[4].'","start":'.$line[5].',"duration":'.$line[6].',"end":'.$line[7].',"startIsMilestone":'.$line[8].',"endIsMilestone":'.$line[9].',"assigs":[],"depends":"'.$line[10].'","description":"'.$line[11].'","progress":"'.$line[12].'","full_mes":"'.$line[16].'","now_mes":"'.$line[17].'","fprogress":"'.$line[18].'","ffull_mes":"'.$line[19].'","fnow_mes":"'.$line[20].'"}';
-
     while ($line=mysql_fetch_row($result)) {
     $asd.=',{"id":'.$line[0].',"name":"'.$line[1].'","code":"'.$line[0].'","level":'.$line[3].',"status":"'.$line[4].'","start":'.$line[5].',"duration":'.$line[6].',"end":'.$line[7].',"startIsMilestone":'.$line[8].',"endIsMilestone":'.$line[9].',"assigs":[],"depends":"'.$line[10].'","description":"'.$line[11].'","progress":"'.$line[12].'","full_mes":"'.$line[16].'","now_mes":"'.$line[17].'","fprogress":"'.$line[18].'","ffull_mes":"'.$line[19].'","fnow_mes":"'.$line[20].'"}';
     }
