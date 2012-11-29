@@ -9,14 +9,9 @@
   require 'connection.php'; // Connection php file, used for database connections.
   mysql_query("SET NAMES utf8"); // Set unicode for mysql queries.
 
-  fb($_POST); // firephp console print: username (sent via loginproc.php)
-
   // Getting the username variable from the session.
   $session_username = $_SESSION['username'];
   $username = mysql_real_escape_string($session_username);
-
-  // Firephp console debugging
-  fb($username);
 
   // Query, extracting user_id and his/her licenses.
   $quera ="select user_id,licenses from staff where name='".$username."' ";
@@ -30,10 +25,6 @@
   $_SESSION['license']  = $linea[1];
   $_SESSION['user_id']  = $linea[0];
   }
-
-  // FirePHP debugging console.
-  fb($_SESSION['license']);
-  fb($_SESSION['user_id']);
 
   /*else{
    $license = $_SESSION['license'];
@@ -91,6 +82,7 @@
   <link rel=stylesheet href="libs/dateField/jquery.dateField.css" type="text/css">
   <link rel=stylesheet href="gantt.css" type="text/css">   
   <link rel=stylesheet href="jquery.alerts.css" type="text/css">     
+  <link rel=stylesheet href="bootstrap/bootstrap.css" type="text/css">
 
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
@@ -113,7 +105,58 @@
 </head>
 
 <body background-color: #ffffff onload='ajax_mine(<? print $proj;?>)'>
-<div id="workSpace" style="padding:0px; overflow-y:auto; overflow-x:hidden;border:1px solid #e5e5e5;position:relative;margin:0 5px"></div>
+
+<!--
+<div class="gantButtonBar" style="top:5px;">
+  <button style="color:pink;">testing</button>
+  <button onclick='openResourceEditor1();' class='button'>edit resources</button>
+  <button onclick='getFile();' class='button'>Εξαγωγή αποτελεσμάτων</button>
+  <button onclick='staffmanage();' class='button'>Διαχείριση Χρηστών</button>
+  <button onclick='savenewdata();' class='button' id='sava' >Εισαγωγή νέων</button>
+  <button onclick='dok();' class='button1' id='hidr'>Απόκρυψη</button>
+  <button  onclick='dok();' class='button1' id='showr' >Περισσότερες Πληροφορίες</button>
+  <select name='project' class='button' id='prosel' onChange='getCurrencyCode(this.value)'> <?php $result=mysql_query('select name, project_id from tasks where parent = 0  and project_id in (select project_id from staff_tasks where user_id = "'.$user_id.'" )'); ?><option value=''>ΕΠΙΛΕΞΤΕ</option><? while ($linew= mysql_fetch_row($result)) {?><option value='<? print $linew[1];?>'><? print $linew[0]; ?></option><? } ?><option value='full'>Σύνοψη Έργων</option></select>
+  <select name='project1' class='buttonslct' id='propacktask' onChange='getCurrencyCode1(this.value)'> <option value=''>Επιλέξτε</option></select>
+</div>
+-->
+
+  <!-- Buttons, triggering javascript workspace script, including undo redo insert above, insert below, etc.-->
+  <div class="jsbuttons" style="border-color:red; margin:10px;float:left;">
+    
+    <!-- <button onclick='openResourceEditor1();' class='buttonmenu'>edit resources</button> -->
+    <button onclick='staffmanage();' class='button textual'><img src="img/icons/user.png" style="width:20px;height:20px;" title="Διαχείριση Χρηστών"/></button>
+    <span class="ganttButtonSeparator"></span>
+    <button onclick='savenewdata();' class='button textual' id='sava' ><img src="img/icons/newdoc.png" style="width:20px;height:20px;" title="Προσθήκη Έργου/Ενέργειας"/></button>
+    <span class="ganttButtonSeparator"></span>
+    <button onclick='getFile();' class="button textual"><img src="img/icons/export.png" style="width:20px;height:20px;" title="Εξαγωγή σε PDF"/></button>
+    <span class="ganttButtonSeparator"></span>
+    <button onclick="$('#workSpace').trigger('undo.gantt');" class="button textual" title="undo"><img src="img/icons/undo.png" style="width:20px;height:20px;" title="Αναίρεση"/></button>
+    <span class="ganttButtonSeparator"></span>
+    <button onclick="$('#workSpace').trigger('redo.gantt');" class="button textual" title="redo"><img src="img/icons/redo.png" style="width:20px;height:20px;" title="Επαναφορά"/></button>
+    <span class="ganttButtonSeparator"></span>
+    <button onclick="$('#workSpace').trigger('addAboveCurrentTask.gantt');" class="button textual" title="Προσθήκη από πάνω"><span class="teamworkIcon" style="width:20px;height:20px;">l</span></button>
+    <button onclick="$('#workSpace').trigger('addBelowCurrentTask.gantt');" class="button textual" title="Προσθήκη από κάτω"><span class="teamworkIcon">X</span></button>
+    <span class="ganttButtonSeparator"></span>
+    <button onclick="$('#workSpace').trigger('zoomMinus.gantt');" class="button textual" title="zoom out"><img src="img/icons/zoomout.png" style="width:20px;height:20px;"/></button>
+    <button onclick="$('#workSpace').trigger('zoomPlus.gantt');" class="button textual" title="zoom in"><img src="img/icons/zoomin.png" style="width:20px;height:20px;"/></button>
+
+    <span class="ganttButtonSeparator"></span>
+    <button onclick='dok();' class='button textual' id='hidr'><img src="img/icons/leftarrow.png" style="width:40px;height:40px;margin:-10px;" title="Συμπτυγμένη εμφάνιση"/></button>
+    <span class="ganttButtonSeparator"></span>
+    <button  onclick='dok();' class='button textual' id='showr' ><img src="img/icons/rightarrow.png" style="width:40px;height:40px;margin:-10px;" title="Επεκταμένη εμφάνιση"/></button>
+
+    <span class="ganttButtonSeparator"></span>
+    <button onclick="$('#workSpace').trigger('deleteCurrentTask.gantt');" class="button textual" title="delete"><img src="img/icons/trashcan.png" style="width:20px;height:20px;"/></button>
+  </div>
+
+    <div style="float:right;">
+    <select name='project'  id='prosel' onChange='getCurrencyCode(this.value)'> <?php $result =  mysql_query('select name, project_id from tasks where parent = 0  and project_id in (select project_id from staff_tasks where user_id = "'.$user_id.'" )'); ?><option value=''>Επιλογή Έργου</option><? while ($linew= mysql_fetch_row($result)) {?><option value='<? print $linew[1];?>'><? print $linew[0]; ?></option><? } ?><option value='full'>Σύνοψη Έργων</option></select>
+    <select name='project1' id='propacktask' onChange='getCurrencyCode1(this.value)'> <option value=''>Επιλογή Εργασιών</option></select>
+  </div>
+
+
+<div id="workSpace" style="padding:0px; overflow-y:auto; overflow-x:hidden;border:10px solid #e5e5e5;position:relative;margin:0 5px">
+</div>
 
 <div id="taZone" style="display:none;">
   <textarea rows="8" cols="150" id="ta" name="ta">
@@ -121,12 +164,13 @@
   </textarea>
 </div> 
 
+
 <script type="text/javascript">
   var ge;  //this is the hugly but very friendly global var for the gantt editor
   $(function() {
 
   //load templates
-  $("#ganttemplates").loadTemplates();
+  //$("#ganttemplates").loadTemplates();
 
   // here starts gantt initialization
   ge = new GanttMaster();
@@ -134,6 +178,7 @@
   workSpace.css({width:$(window).width() - 20,height:$(window).height() - 100});
   ge.init(workSpace);
 
+/*
   //inject some buttons (for this demo only)
   $(".ganttButtonBar div")//.append("<button onclick='clearGantt();' class='button'>Καθαρισμός</button>")
           .append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
@@ -155,6 +200,10 @@
  ////$(".ganttButtonBar h1").html("<img src='twGanttSmall.png'>");
  
   $(".ganttButtonBar div").addClass('buttons');
+*/
+
+
+
   //overwrite with localized ones
   loadI18n();
 
@@ -182,18 +231,15 @@
 
 });
 
-
 function loadGanttFromServer(taskId, callback) {
 
   loadFromLocalStorage();
 
 }
 
-
 function saveGanttOnServer() {
 
   saveInLocalStorage();
-
 
   var prj = ge.saveProject();
    delete prj.resources;
@@ -485,10 +531,10 @@ function saveInLocalStorage() {
 </script>
 
 
-
   
 <div id="gantEditorTemplates" style="display:none;">
-  <div class="__template__" type="GANTBUTTONS"><!--
+  <!-- <div class="__template__" type="GANTBUTTONS"> -->
+  <!--
   <div class="ganttButtonBar">
   
     <div class="buttons">
@@ -498,22 +544,26 @@ function saveInLocalStorage() {
     <button onclick="$('#workSpace').trigger('addAboveCurrentTask.gantt');" class="button textual" title="insert above"><span class="teamworkIcon">l</span></button>
     <button onclick="$('#workSpace').trigger('addBelowCurrentTask.gantt');" class="button textual" title="insert below"><span class="teamworkIcon">X</span></button>
     <span class="ganttButtonSeparator"></span>
-    <button onclick="$('#workSpace').trigger('indentCurrentTask.gantt');" class="button textual" title="indent task"><span class="teamworkIcon">.</span></button>
-    <button onclick="$('#workSpace').trigger('outdentCurrentTask.gantt');" class="button textual" title="unindent task"><span class="teamworkIcon">:</span></button>
-    <span class="ganttButtonSeparator"></span>
-    <button onclick="$('#workSpace').trigger('moveUpCurrentTask.gantt');" class="button textual" title="move up"><span class="teamworkIcon">k</span></button>
-    <button onclick="$('#workSpace').trigger('moveDownCurrentTask.gantt');" class="button textual" title="move down"><span class="teamworkIcon">j</span></button>
-    <span class="ganttButtonSeparator"></span>
     <button onclick="$('#workSpace').trigger('zoomMinus.gantt');" class="button textual" title="zoom out"><span class="teamworkIcon">)</span></button>
     <button onclick="$('#workSpace').trigger('zoomPlus.gantt');" class="button textual" title="zoom in"><span class="teamworkIcon">(</span></button>
     <span class="ganttButtonSeparator"></span>
     <button onclick="$('#workSpace').trigger('deleteCurrentTask.gantt');" class="button textual" title="delete"><span class="teamworkIcon">&cent;</span></button>
       &nbsp; &nbsp; &nbsp; &nbsp;
     </div></div>
-  --></div>
+  -->
+<!-- </div> -->
 
-  <!--- TO esvisa --->
-  <!---  <button onclick="saveGanttOnServer();" class="button first big" title="save">save</button> den 8eloume na kanei save me ayto to koumpi -->
+
+<!-- parmena apo parapanw, mhpws ksanaxreiastoun-->
+<!-- <span class="ganttButtonSeparator"></span>
+    <button onclick="$('#workSpace').trigger('moveUpCurrentTask.gantt');" class="button textual" title="move up"><span class="teamworkIcon">k</span></button>
+    <button onclick="$('#workSpace').trigger('moveDownCurrentTask.gantt');" class="button textual" title="move down"><span class="teamworkIcon">j</span></button>
+    
+    <span class="ganttButtonSeparator"></span>
+    <button onclick="$('#workSpace').trigger('indentCurrentTask.gantt');" class="button textual" title="indent task"><span class="teamworkIcon">.</span></button>
+    <button onclick="$('#workSpace').trigger('outdentCurrentTask.gantt');" class="button textual" title="unindent task"><span class="teamworkIcon">:</span></button>
+    
+-->
 
 
 
@@ -534,6 +584,7 @@ function saveInLocalStorage() {
     </thead>
   </table>
   </div>
+
 
   <div class="__template__" type="TASKROW"><!--
   <tr taskId="(#=obj.id#)" class="taskEditRow" level="(#=level#)">
@@ -1352,7 +1403,6 @@ function dok(){
       $(".splitBox1").animate({width:"308.8888883590698px"}, 500 );
       $(".splitBox2").animate({width: "1778.1111116409302px", left: "308.8888883590698px"}, 500 );
       $(".vSplitBar").animate({left: "303.889px"}, 500 );
-
   }); 
     }
 </script>    
